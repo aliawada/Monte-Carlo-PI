@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<title>Monte Carlo: PI</title>
+</head>
+<style type="text/css">
+	#myCanvas{
+	  border-bottom: 1px solid rgba(0,0,0,0.3); 
+	  background-color: #FFF;
+	  box-shadow: 0 9px 20px -5px rgba(0,0,0,0.8);
+	}
+</style>
+<script type="text/javascript">
+var ctx;
+var canvas;
+var r = 250;
+
+window.onload = function(){
+	criarCanvas();
+};
+
+function criarCanvas(){
+	canvas = document.getElementById("myCanvas");
+
+    ctx = canvas.getContext("2d");
+	
+	ctx.translate(250, 250);
+	
+	ctx.lineWidth = 5;
+	
+    ctx.strokeRect(-250, -250, r*2,r*2);
+	
+	ctx.arc(0, 0, r, 0, 2 * Math.PI);
+	ctx.stroke();
+}
+
+function drawRect(x, y, w, h, fill) {
+	ctx.fillStyle = fill;	
+	ctx.fillRect(x, y, w, h);
+}
+
+function getRandom(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+function clearCanvas() {
+
+	ctx.clearRect(-250,-250, r*2, r*2);
+	
+	ctx.strokeRect(-250, -250, r*2,r*2);
+	
+	ctx.arc(0, 0, r, 0, 2 * Math.PI);
+	ctx.stroke();
+	
+}
+
+/*
+ * Calcula pi, utilizando o método de Monte Carlo.
+ *
+ * n é o número  de pontos que serão sorteados no cálculo
+ */
+function pi(){
+	var n = document.getElementById("totalPontos").value; 
+    
+    var acertos = 0;
+    var i;
+    var recordePI = 0;
+
+    for(i = 0; i < n; i++){
+        var x = getRandom(-r, r);
+        var y = getRandom(-r, r);
+		
+        
+		var d = x * x + y * y;
+        if( d <  r * r){
+			drawRect(x, y, 1, 1, "blue");
+            acertos++;
+        } else {
+			drawRect(x, y, 1, 1, "red");
+		}
+
+        var valorPI = 4.0 * acertos / n;
+        var recordeDif = Math.abs(Math.PI - recordePI);
+        var dif = Math.abs(Math.PI - valorPI);
+        if(dif < recordeDif){
+        	recordeDif = dif;
+        	recordePI = valorPI;
+        }
+
+    }  
+
+    return recordePI;
+}
+
+	
+</script>
+
+<body>
+	<div>
+		<ul>
+			<li>
+				<p>Calcular uma aproximação ao valor de PI pelo método estatístico de Monte Carlo</p>
+				<canvas id="myCanvas" width="500" height="500">
+				
+				</canvas>
+			</li>
+		</ul>
+		<div>
+			<label>Entre com o total de pontos</label>
+			<br>
+			<input type="number" id="totalPontos">
+			<input type="submit" id="mySubmit" value="executar" onclick="console.log(pi());">
+			<input type="button" id="clear" value="limpar" onclick="clearCanvas();">
+		</div>
+	</div>
+</body>
+</html>
+
